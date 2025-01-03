@@ -21,8 +21,47 @@ public class UserNotification implements Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // GETTERS & SETTERS
+    // CONSTRUCTORS
+    public UserNotification() {};
 
+    public UserNotification(String userNotificationType, String message, User user) {
+        this.userNotificationType = userNotificationType;
+        this.message = message;
+        this.user = user;
+    }
+
+    // GETTERS & SETTERS
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUserNotificationType() {
+        return userNotificationType;
+    }
+
+    public void setUserNotificationType(String userNotificationType) {
+        this.userNotificationType = userNotificationType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     // METHODS
     public String buildNotification() {

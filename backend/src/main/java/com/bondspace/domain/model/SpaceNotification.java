@@ -21,8 +21,47 @@ public class SpaceNotification implements Notification {
     @JoinColumn(name = "space_id", nullable = false)
     private Space space;
 
-    // GETTERS & SETTERS
+    // CONSTRUCTORS
+    public SpaceNotification() {};
 
+    public SpaceNotification(String spaceNotificationType, String message, Space space) {
+        this.spaceNotificationType = spaceNotificationType;
+        this.message = message;
+        this.space = space;
+    }
+
+    // GETTERS & SETTERS
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSpaceNotificationType() {
+        return spaceNotificationType;
+    }
+
+    public void setSpaceNotificationType(String spaceNotificationType) {
+        this.spaceNotificationType = spaceNotificationType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Space getSpace() {
+        return space;
+    }
+
+    public void setSpace(Space space) {
+        this.space = space;
+    }
 
     // METHODS
     public String buildNotification() {
