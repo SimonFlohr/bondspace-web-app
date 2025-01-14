@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(50),
     user_bio TEXT,
     user_picture VARCHAR(255),
-    spaces INT[],
     notifications INT[]
 );
 
@@ -22,7 +21,6 @@ CREATE TABLE IF NOT EXISTS spaces (
     description TEXT,
     space_picture VARCHAR(255),
     memories INT[],
-    users INT[] NOT NULL,
     space_notifications INT[]
 );
 

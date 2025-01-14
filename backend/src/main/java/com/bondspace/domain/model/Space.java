@@ -46,6 +46,11 @@ public class Space {
     // CONSTRUCTORS
     public Space() {};
 
+    public Space(String spaceName, String spaceDescription) {
+        this.spaceName = spaceName;
+        this.spaceDescription = spaceDescription;
+    }
+
     public Space(String spaceName, String spaceDescription, List<UserSpace> userSpaces) {
         this.spaceName = spaceName;
         this.spaceDescription = spaceDescription;

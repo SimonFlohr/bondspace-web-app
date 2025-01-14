@@ -58,6 +58,12 @@ public class User {
         this.password = password;
     }
 
+    public User(String emailAddress, String password, String firstName) {
+        this.emailAddress = emailAddress;
+        this.password = password;
+        this.firstName = firstName;
+    }
+
     // GETTERS & SETTERS
     public int getId() {
         return id;
