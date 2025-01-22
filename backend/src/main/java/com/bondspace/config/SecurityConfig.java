@@ -5,9 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 @Configuration
 public class SecurityConfig {
+
+    @Bean
+    public DelegatingFilterProxy sessionValidationFilter() {
+        return new DelegatingFilterProxy("sessionValidationFilter");
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
