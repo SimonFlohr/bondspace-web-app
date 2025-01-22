@@ -24,6 +24,7 @@ public class SecurityConfig {
                 // Configure URL access rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Public endpoints
+                        .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated() // Secure other endpoints
                 )
 
