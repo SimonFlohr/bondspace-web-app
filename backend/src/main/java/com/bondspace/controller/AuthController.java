@@ -5,10 +5,7 @@ import com.bondspace.domain.dto.RegistrationRequestDTO;
 import com.bondspace.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,6 +30,13 @@ public class AuthController {
     public ResponseEntity<String> logout() {
         String response = authService.logoutUser();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Void> checkAuthStatus() {
+        // If the session is not valid, the SessionValidationFilter will return 401
+        // If we get here, it means the session is valid
+        return ResponseEntity.ok().build();
     }
 
 }
