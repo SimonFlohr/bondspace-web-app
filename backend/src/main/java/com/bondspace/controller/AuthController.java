@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -21,9 +23,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDTO request) {
         String response = authService.loginUser(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("message", response));
     }
 
     @PostMapping("/logout")
