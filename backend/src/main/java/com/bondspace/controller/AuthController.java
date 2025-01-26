@@ -35,9 +35,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<Map<String, String>> logout() {
         String response = authService.logoutUser();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("message", response));
     }
 
     @GetMapping("/status")

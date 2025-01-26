@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.API_URL}/logout`, {})
+    return this.http.post(`${this.API_URL}/logout`, {}, httpOptions)
       .pipe(
         tap(() => {
           this.isAuthenticatedSubject.next(false);

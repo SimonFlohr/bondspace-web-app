@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   private authSubscription?: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,  private router: Router) {}
 
   ngOnInit(): void {
     // Store the subscription so we can clean it up later
@@ -29,6 +29,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
         console.error('Auth subscription error:', error);
         this.isAuthenticated = false;
       }
+    });
+  }
+
+  logout() {
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('Logged out successfully');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => console.error('Logout failed:', error)
     });
   }
 
