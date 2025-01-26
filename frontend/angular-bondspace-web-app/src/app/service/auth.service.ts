@@ -9,7 +9,7 @@ export class AuthService {
   
   // FIELDS
 
-  private readonly API_URL = '/api/auth';
+  private readonly API_URL = 'http://localhost:8080/api/auth';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
   // CONSTRUCTORS
