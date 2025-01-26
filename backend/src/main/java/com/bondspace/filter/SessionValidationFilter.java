@@ -15,6 +15,17 @@ public class SessionValidationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        // Exclude public endpoints from session validation
+        String path = httpRequest.getRequestURI();
+        if (path.startsWith("/api/auth/") || path.startsWith("/public/")) {
+            try {
+                chain.doFilter(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         // Check session attributes
         if (httpRequest.getSession().getAttribute("userId") == null) {
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
