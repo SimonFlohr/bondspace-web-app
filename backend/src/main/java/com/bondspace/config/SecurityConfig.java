@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.DelegatingFilterProxy;
+
+import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
@@ -19,17 +22,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF protection if not needed (adjust for production as required)
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(Arrays.asList("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
                 .csrf(csrf -> csrf.disable())
-
-                // Configure URL access rules
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Public endpoints
-                        .requestMatchers("/public/**").permitAll()
-                        .anyRequest().authenticated() // Secure other endpoints
-                )
-
-                // Basic authentication
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
