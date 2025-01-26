@@ -23,11 +23,13 @@ export class LoginComponent {
   onSubmit() {
     if (this.email && this.password) {
       this.authService.login(this.email, this.password).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Login response:', response)
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
-          console.error('Login failed:', error);
+          console.log('Login failed:', error);
+          alert(error.error || 'Login failed')
         }
       });
     }
