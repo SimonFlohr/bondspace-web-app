@@ -26,9 +26,13 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegistrationRequestDTO request) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegistrationRequestDTO request) {
         String response = authService.registerUser(request);
-        return ResponseEntity.ok(response);
+        System.out.printf("Added the following user:%n %s %s%n%s%n",
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmailAddress());
+        return ResponseEntity.ok(Map.of("message", response));
     }
 
     @PostMapping("/login")

@@ -26,14 +26,18 @@ public class AuthService {
             throw new IllegalArgumentException("Email address is already in use.");
         }
 
-        User newUser = new User();
-        newUser.setEmailAddress(request.getEmailAddress());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setFirstName(request.getFirstName());
-        newUser.setLastName(request.getLastName());
-
-        userRepository.save(newUser);
-        return "User registered successfully.";
+        User user = new User();
+        try {
+            user.setEmailAddress(request.getEmailAddress());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
+            userRepository.save(user);
+            return "User registered successfully.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error creating user:" + e.getMessage());
+        }
     }
 
     public String loginUser(LoginRequestDTO request) {
