@@ -1,5 +1,6 @@
 package com.bondspace.config;
 
+import com.bondspace.filter.SessionValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,8 +12,8 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 public class SecurityConfig {
 
     @Bean
-    public DelegatingFilterProxy sessionValidationFilter() {
-        return new DelegatingFilterProxy("sessionValidationFilter");
+    public SessionValidationFilter sessionValidationFilter() {
+        return new SessionValidationFilter();
     }
 
     @Bean
