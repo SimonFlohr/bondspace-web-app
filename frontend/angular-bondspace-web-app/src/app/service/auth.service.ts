@@ -48,6 +48,10 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/register`, { emailAddress: email, password, firstName, lastName });
   }
 
+  getCurrentUser(): Observable<{firstName: string}> {
+    return this.http.get<{firstName: string}>(`${this.API_URL}/user`, httpOptions);
+  }
+
   isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject.asObservable();
   }

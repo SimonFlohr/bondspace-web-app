@@ -30,7 +30,7 @@
           <!-- Show profile button when authenticated -->
           <div class="dropdown" *ngIf="isAuthenticated">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              Profile
+              {{ userName || 'Profile' }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" routerLink="/profile">My Profile</a></li>

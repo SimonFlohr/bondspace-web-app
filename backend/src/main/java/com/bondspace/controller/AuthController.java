@@ -2,6 +2,8 @@ package com.bondspace.controller;
 
 import com.bondspace.domain.dto.LoginRequestDTO;
 import com.bondspace.domain.dto.RegistrationRequestDTO;
+import com.bondspace.domain.model.User;
+import com.bondspace.repository.UserRepository;
 import com.bondspace.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class AuthController {
 
     @Autowired
     private HttpSession httpSession;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDTO request) {
@@ -45,6 +50,13 @@ public class AuthController {
         System.out.println("Checking status - Session ID: " + httpSession.getId());
         System.out.println("User ID in status check: " + httpSession.getAttribute("userId"));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<Map<String, String>> getCurrentUser() {
+        Integer userId = (Integer) httpSession.getAttribute("userId");
+        User user = userRepository.findById(userId).orElseThrow();
+        return ResponseEntity.ok(Map.of("firstName", user.getFirstName()));
     }
 
 }

@@ -15,6 +15,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isAuthenticated = false;
   private authSubscription?: Subscription;
+  userName: string = '';
 
   constructor(private authService: AuthService,  private router: Router) {}
 
@@ -24,6 +25,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       next: (auth) => {
         console.log('Auth state changed:', auth);
         this.isAuthenticated = auth;
+        if (auth) {
+          this.authService.getCurrentUser().subscribe(user => {
+            this.userName = user.firstName;
+          });
+        }
       },
       error: (error) => {
         console.error('Auth subscription error:', error);
