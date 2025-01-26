@@ -1,6 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  withCredentials: true  // Add this
+};
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +27,7 @@ export class AuthService {
   // METHODS
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, { emailAddress: email, password })
+    return this.http.post(`${this.API_URL}/login`, { emailAddress: email, password }, httpOptions)
       .pipe(
         tap(() => {
           this.isAuthenticatedSubject.next(true)
@@ -49,7 +54,7 @@ export class AuthService {
 
   private checkAuthStatus() {
     // Make call to the backend to verify this session
-    this.http.get(`${this.API_URL}/status`).subscribe({
+    this.http.get(`${this.API_URL}/status`, httpOptions).subscribe({
       next: () => this.isAuthenticatedSubject.next(true),
       error: () => this.isAuthenticatedSubject.next(false)
     });
