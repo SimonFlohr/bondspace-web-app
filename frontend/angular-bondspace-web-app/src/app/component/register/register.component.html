@@ -1,1 +1,98 @@
-<p>register works!</p>
+<div class="container-fluid bg-light min-vh-100">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h2 class="text-center mb-3">Create a new account</h2>
+                    <p class="text-center text-muted">Welcome to BondSpace! You can proceed with creating your new account below:</p>
+                </div>
+                <div class="card-body px-4">
+                    <form #registerForm="ngForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="email" 
+                                [(ngModel)]="email" 
+                                name="email"
+                                #emailInput="ngModel"
+                                placeholder="Enter your email"
+                                required>
+                            <small class="text-danger" *ngIf="emailInput.invalid && emailInput.touched">
+                                Email is required
+                            </small>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                [(ngModel)]="password" 
+                                name="password"
+                                #passwordInput="ngModel"
+                                placeholder="Enter your password"
+                                required>
+                                <small class="text-danger" *ngIf="passwordInput.invalid && passwordInput.touched">
+                                    Password is required
+                                </small>
+                        </div>
+                        <div class="mb-4">
+                            <label for="passwordConfirm" class="form-label">Confirm password</label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="passwordConfirm"
+                                [(ngModel)]="passwordConfirm"
+                                name="passwordConfirm"
+                                #passwordConfirmInput="ngModel"
+                                placeholder="Re-enter your password"
+                                required>
+                                <small class="text-danger" *ngIf="passwordConfirmInput.value !== passwordInput.value && passwordConfirmInput.touched">
+                                    Password confirmation does not match the original
+                                </small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First name</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="firstName" 
+                                [(ngModel)]="firstName" 
+                                name="firstName"
+                                #firstNameInput="ngModel"
+                                placeholder="Enter your first name"
+                                required>
+                            <small class="text-danger" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+                                First name is required
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last name</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="lastName" 
+                                [(ngModel)]="lastName" 
+                                name="lastName"
+                                #lastNameInput="ngModel"
+                                placeholder="Enter your last name"
+                                required>
+                            <small class="text-danger" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+                                Last name is required
+                            </small>
+                        </div><br>
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-warning" [disabled]="registerForm.invalid">Register</button>
+                        </div>
+                        <p class="text-center mb-0">
+                            Already have an account? 
+                            <a routerLink="/login" class="link-opacity-100" role="button">Log in</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
