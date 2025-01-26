@@ -1,0 +1,53 @@
+<div class="container-fluid bg-light min-vh-100">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h2 class="text-center mb-3">Welcome back.</h2>
+                    <p class="text-center text-muted">Please log in to your BondSpace account:</p>
+                </div>
+                <div class="card-body px-4">
+                    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="email" 
+                                [(ngModel)]="email" 
+                                name="email"
+                                #emailInput="ngModel"
+                                placeholder="Enter your email"
+                                required>
+                            <small class="text-danger" *ngIf="emailInput.invalid && emailInput.touched">
+                                Email is required
+                            </small>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                [(ngModel)]="password" 
+                                name="password"
+                                #passwordInput="ngModel"
+                                placeholder="Enter your password"
+                                required>
+                                <small class="text-danger" *ngIf="passwordInput.invalid && passwordInput.touched">
+                                    Password is required
+                                </small>
+                        </div>
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-warning" [disabled]="loginForm.invalid">Log in</button>
+                        </div>
+                        <p class="text-center mb-0">
+                            Don't have an account? 
+                            <a routerLink="/register" class="text-primary text-decoration-none">Register</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
