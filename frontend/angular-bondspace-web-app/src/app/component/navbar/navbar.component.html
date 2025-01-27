@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f5f5f5;">
     <div class="container">
       <!-- Logo -->
       <a class="navbar-brand" routerLink="/login" *ngIf="!isAuthenticated">
@@ -18,7 +18,7 @@
         <!-- Show navigation items only when authenticated -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="isAuthenticated">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+            <a class="nav-link" routerLink="/dashboard" routerLinkActive="active" style="color:#6c757d">Dashboard</a>
           </li>
         </ul>
   
