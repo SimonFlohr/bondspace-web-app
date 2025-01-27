@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -21,10 +21,19 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     // Check the initial authentication state
-    this.checkAuthStatus();
+    this.checkInitialAuthStatus();
   }
 
   // METHODS
+
+  private checkInitialAuthStatus(): void {
+    this.http.get<void>(`${this.API_URL}/status`, { withCredentials: true }).pipe(
+      map(() => true),
+      catchError(() => of(false))
+    ).subscribe(isAuthenticated => {
+      this.isAuthenticatedSubject.next(isAuthenticated);
+    });
+  }
 
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.API_URL}/login`, { emailAddress: email, password }, httpOptions)
@@ -56,12 +65,14 @@ export class AuthService {
     return this.isAuthenticatedSubject.asObservable();
   }
 
-  private checkAuthStatus() {
-    // Make call to the backend to verify this session
-    this.http.get(`${this.API_URL}/status`, httpOptions).subscribe({
-      next: () => this.isAuthenticatedSubject.next(true),
-      error: () => this.isAuthenticatedSubject.next(false)
-    });
+  checkAuthStatus(): Observable<boolean> {
+    return this.http.get<void>(`${this.API_URL}/status`, { withCredentials: true }).pipe(
+      map(() => true),
+      catchError(() => of(false)),
+      tap(isAuthenticated => {
+        this.isAuthenticatedSubject.next(isAuthenticated);
+      })
+    );
   }
   
 }
