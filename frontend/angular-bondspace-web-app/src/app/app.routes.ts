@@ -8,6 +8,7 @@ import { inject } from '@angular/core';
 import { AuthService } from './service/auth.service';
 import { map, take } from 'rxjs/operators';
 import { AppComponent } from './app.component';
+import { CreateSpaceComponent } from './component/create-space/create-space.component';
 
 export const routes: Routes = [
     {
@@ -29,6 +30,11 @@ export const routes: Routes = [
         path: 'register',
         component: RegisterComponent,
         canActivate: [UnauthGuard]
+    },
+    {
+        path: 'create-space',
+        component: CreateSpaceComponent,
+        canActivate: [AuthGuard]
     }
 ];
 
