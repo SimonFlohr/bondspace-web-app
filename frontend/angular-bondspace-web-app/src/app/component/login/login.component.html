@@ -1,10 +1,13 @@
 <div class="container-fluid bg-light min-vh-100">
     <div class="row justify-content-center align-items-center min-vh-100">
-        <div class="col-md-4">
+        <div class="col-sm-8 col-md-6 col-xxl-3">
             <div class="card shadow">
-                <div class="card-header bg-white border-0 pt-4">
-                    <h2 class="text-center mb-3">Welcome back.</h2>
-                    <p class="text-center text-muted">Please log in to your BondSpace account:</p>
+                <div class="card-header bg-white border-0 p-4">
+                    <div class="d-flex flex-row mb-3 justify-content-center align-items-center" style="margin-left:-10px;">
+                        <img src="assets/img/logo2.png" alt="BondSpace" height="80">
+                        <h2 class="text-center mb-3" style="margin-top:12px; margin-left: 10px;">BondSpace</h2>
+                    </div>
+                    <p class="text-center text-muted">Welcome back! Please log in to your BondSpace account below.</p>
                 </div>
                 <div class="card-body px-4">
                     <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
