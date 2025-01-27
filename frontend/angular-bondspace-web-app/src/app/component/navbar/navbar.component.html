@@ -1,7 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       <!-- Logo -->
-      <a class="navbar-brand" routerLink="/">
+      <a class="navbar-brand" routerLink="/login" *ngIf="!isAuthenticated">
+        <img src="assets/img/logo.png" alt="BondSpace" height="40">
+      </a>
+      <a class="navbar-brand" routerLink="/dashboard" *ngIf="isAuthenticated">
         <img src="assets/img/logo.png" alt="BondSpace" height="40">
       </a>
   
