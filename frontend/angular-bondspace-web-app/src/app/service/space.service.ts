@@ -32,4 +32,10 @@ export class SpaceService {
   getSpaceMemories(spaceId: number): Observable<any> {
     return this.http.get(`${this.API_URL}/${spaceId}/memories`, { withCredentials: true });
   }
+
+  inviteUser(spaceId: number, emailAddress: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/${spaceId}/invite`, {
+      emailAddress
+    }, { withCredentials: true });
+  }
 }

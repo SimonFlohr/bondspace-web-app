@@ -1,13 +1,18 @@
 package com.bondspace.controller;
 
 import com.bondspace.domain.dto.CreateSpaceRequestDTO;
+import com.bondspace.domain.dto.InviteUserRequestDTO;
 import com.bondspace.domain.model.Space;
+import com.bondspace.domain.model.User;
+import com.bondspace.domain.model.UserNotification;
 import com.bondspace.domain.model.UserSpace;
 import com.bondspace.domain.model.enums.SpaceUserRole;
 import com.bondspace.repository.SpaceRepository;
+import com.bondspace.repository.UserNotificationRepository;
 import com.bondspace.repository.UserRepository;
 import com.bondspace.repository.UserSpaceRepository;
 import com.bondspace.util.SessionUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +34,9 @@ public class SpaceController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserNotificationRepository userNotificationRepository;
 
     @Autowired
     private SessionUtil sessionUtil;
@@ -69,9 +77,9 @@ public class SpaceController {
 
         try {
             List<UserSpace> userSpaces = userSpaceRepository.findAllByUserId(userId);
-
-            // Create a simplified response object with only the data we need
+            
             List<Map<String, Object>> spacesResponse = userSpaces.stream()
+                    .filter(userSpace -> userSpace.getUserRole() != SpaceUserRole.INVITEE) // Add this line
                     .map(userSpace -> {
                         Space space = userSpace.getSpace();
                         Map<String, Object> spaceData = new HashMap<>();
@@ -156,6 +164,62 @@ public class SpaceController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Failed to fetch memories: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{spaceId}/invite")
+    @Transactional
+    public ResponseEntity<?> inviteUser(@PathVariable int spaceId, @RequestBody InviteUserRequestDTO request) {
+        Integer currentUserId = sessionUtil.getLoggedInUserId();
+        if (currentUserId == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            // Find the invitee by email
+            User invitee = userRepository.findByEmailAddress(request.getEmailAddress())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            Space space = spaceRepository.findById(spaceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Space not found"));
+
+            // Check if user is already an INVITEE
+            List<UserSpace> existingUserSpaces = userSpaceRepository.findAllBySpaceId(spaceId);
+            boolean isAlreadyInvited = existingUserSpaces.stream()
+                    .anyMatch(userSpace ->
+                            userSpace.getUser().getId() == invitee.getId() &&
+                                    userSpace.getUserRole() == SpaceUserRole.INVITEE
+                    );
+
+            if (isAlreadyInvited) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "User has already been invited to this space"));
+            }
+
+            // Rest of your existing code...
+            UserNotification notification = new UserNotification(
+                    "SPACE_INVITE",
+                    String.format("You have been invited to join the space: %s", space.getSpaceName()),
+                    invitee
+            );
+
+            notification.setUser(invitee);
+            invitee.getUserNotifications().add(notification);
+
+            userNotificationRepository.save(notification);
+            userRepository.save(invitee);
+
+            UserSpace userSpace = new UserSpace(
+                    SpaceUserRole.INVITEE,
+                    invitee,
+                    space
+            );
+            userSpaceRepository.save(userSpace);
+
+            return ResponseEntity.ok(Map.of("message", "Invitation sent successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to send invitation: " + e.getMessage()));
         }
     }
 }

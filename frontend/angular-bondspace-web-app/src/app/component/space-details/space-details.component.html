@@ -21,6 +21,11 @@
                 <!-- Members Section -->
                 <div class="vstack gap-2">
                     <h5 style="font-weight: 400;">Members</h5>
+                    <button class="btn btn-outline-secondary" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#inviteModal">
+                        Invite User
+                    </button>
                     <div class="vstack gap-2">
                         <div *ngFor="let member of members" 
                              class="d-flex gap-4 justify-content-between align-items-center p-1 border clickable-space">
@@ -57,6 +62,37 @@
                         </span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="inviteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Invite User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="emailAddress" class="form-label">Email address</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="emailAddress"
+                           [(ngModel)]="emailAddress"
+                           placeholder="Enter user's email">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" 
+                        class="btn btn-secondary" 
+                        data-bs-dismiss="modal">Close</button>
+                <button type="button" 
+                        class="btn btn-warning" 
+                        (click)="inviteUser()"
+                        data-bs-dismiss="modal">
+                    Send Invitation
+                </button>
             </div>
         </div>
     </div>
