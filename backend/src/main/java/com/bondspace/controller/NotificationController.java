@@ -1,8 +1,10 @@
 package com.bondspace.controller;
 
+import com.bondspace.domain.model.User;
 import com.bondspace.domain.model.UserSpace;
 import com.bondspace.domain.model.enums.SpaceUserRole;
 import com.bondspace.repository.UserNotificationRepository;
+import com.bondspace.repository.UserRepository;
 import com.bondspace.repository.UserSpaceRepository;
 import com.bondspace.util.SessionUtil;
 import com.bondspace.domain.model.UserNotification;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,9 @@ public class NotificationController {
 
     @Autowired
     private UserSpaceRepository userSpaceRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SessionUtil sessionUtil;
@@ -71,6 +77,9 @@ public class NotificationController {
             UserNotification notification = userNotificationRepository.findById(notificationId)
                     .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
 
+            // Get the user
+            User user = notification.getUser();
+
             // Find the UserSpace entry where the user is an INVITEE
             List<UserSpace> userSpaces = userSpaceRepository.findAllByUserId(userId);
             UserSpace inviteeSpace = userSpaces.stream()
@@ -83,7 +92,10 @@ public class NotificationController {
             inviteeSpace.setUserRole(SpaceUserRole.MEMBER);
             userSpaceRepository.save(inviteeSpace);
 
-            // Delete the notification after processing
+            // Remove notification ID from user's notifications array
+            removeNotificationFromUser(user, notificationId);
+
+            // Delete the notification
             userNotificationRepository.deleteById(notificationId);
 
             return ResponseEntity.ok(Map.of("message", "Invitation accepted successfully"));
@@ -106,6 +118,9 @@ public class NotificationController {
             UserNotification notification = userNotificationRepository.findById(notificationId)
                     .orElseThrow(() -> new IllegalArgumentException("Notification not found"));
 
+            // Get the user
+            User user = notification.getUser();
+
             // Find and delete the UserSpace entry where the user is an INVITEE
             List<UserSpace> userSpaces = userSpaceRepository.findAllByUserId(userId);
             UserSpace inviteeSpace = userSpaces.stream()
@@ -117,6 +132,9 @@ public class NotificationController {
             // Delete the UserSpace entry
             userSpaceRepository.delete(inviteeSpace);
 
+            // Remove notification ID from user's notifications array
+            removeNotificationFromUser(user, notificationId);
+
             // Delete the notification
             userNotificationRepository.deleteById(notificationId);
 
@@ -124,6 +142,19 @@ public class NotificationController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Failed to deny invitation: " + e.getMessage()));
+        }
+    }
+
+    private void removeNotificationFromUser(User user, int notificationId) {
+        Integer[] currentNotifications = user.getNotifications();
+        if (currentNotifications != null) {
+            // Create new array without the specified notification ID
+            Integer[] newNotifications = Arrays.stream(currentNotifications)
+                    .filter(id -> id != notificationId)
+                    .toArray(Integer[]::new);
+
+            user.setNotifications(newNotifications);
+            userRepository.save(user);
         }
     }
 }
