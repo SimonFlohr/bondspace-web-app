@@ -17,6 +17,10 @@ export class SpaceService {
     }, { withCredentials: true });
   }
 
+  deleteSpace(spaceId: number): Observable<any> {
+    return this.http.delete(`${this.API_URL}/${spaceId}`, { withCredentials: true });
+  }
+
   getUserSpaces(): Observable<any> {
     return this.http.get(`${this.API_URL}/user-spaces`, { withCredentials: true });
   }

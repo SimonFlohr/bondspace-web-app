@@ -14,6 +14,7 @@ import com.bondspace.repository.UserSpaceRepository;
 import com.bondspace.util.SessionUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,38 @@ public class SpaceController {
             return ResponseEntity.ok(Map.of("message", "Space created successfully"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to create space: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{spaceId}")
+    public ResponseEntity<?> deleteSpace(@PathVariable int spaceId) {
+        Integer userId = sessionUtil.getLoggedInUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            // Find the UserSpace entry for this user in this space
+            List<UserSpace> userSpaces = userSpaceRepository.findAllBySpaceId(spaceId);
+            UserSpace userSpace = userSpaces.stream()
+                    .filter(us -> us.getUser().getId() == userId)  // Changed from .equals() to ==
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("User is not a member of this space"));
+
+            // Check if the user is the OWNER
+            if (userSpace.getUserRole() != SpaceUserRole.OWNER) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Only the owner can delete a space"));
+            }
+
+            // Delete the space (cascading will handle related entities)
+            spaceRepository.deleteById(spaceId);
+
+            return ResponseEntity.ok(Map.of("message", "Space deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to delete space: " + e.getMessage()));
         }
     }
 
