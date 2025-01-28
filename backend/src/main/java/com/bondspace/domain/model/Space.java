@@ -6,7 +6,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "spaces")
@@ -35,13 +37,13 @@ public class Space {
     private String spacePicture;
 
     @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSpace> userSpaces = new ArrayList<>();
+    private Set<UserSpace> userSpaces = new HashSet<>();  //
 
     @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SpaceNotification> spaceNotifications = new ArrayList<>();
+    private Set<SpaceNotification> spaceNotifications = new HashSet<>();
 
     @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Memory> memories = new ArrayList<>();
+    private Set<Memory> memories = new HashSet<>();
 
     // CONSTRUCTORS
     public Space() {};
@@ -51,7 +53,7 @@ public class Space {
         this.spaceDescription = spaceDescription;
     }
 
-    public Space(String spaceName, String spaceDescription, List<UserSpace> userSpaces) {
+    public Space(String spaceName, String spaceDescription, Set<UserSpace> userSpaces) {
         this.spaceName = spaceName;
         this.spaceDescription = spaceDescription;
         this.userSpaces = userSpaces;
@@ -106,27 +108,27 @@ public class Space {
         this.spacePicture = spacePicture;
     }
 
-    public List<UserSpace> getUserSpaces() {
+    public Set<UserSpace> getUserSpaces() {
         return userSpaces;
     }
 
-    public void setUserSpaces(List<UserSpace> userSpaces) {
+    public void setUserSpaces(Set<UserSpace> userSpaces) {
         this.userSpaces = userSpaces;
     }
 
-    public List<SpaceNotification> getSpaceNotifications() {
+    public Set<SpaceNotification> getSpaceNotifications() {
         return spaceNotifications;
     }
 
-    public void setSpaceNotifications(List<SpaceNotification> spaceNotifications) {
+    public void setSpaceNotifications(Set<SpaceNotification> spaceNotifications) {
         this.spaceNotifications = spaceNotifications;
     }
 
-    public List<Memory> getMemories() {
+    public Set<Memory> getMemories() {
         return memories;
     }
 
-    public void setMemories(List<Memory> memories) {
+    public void setMemories(Set<Memory> memories) {
         this.memories = memories;
     }
 

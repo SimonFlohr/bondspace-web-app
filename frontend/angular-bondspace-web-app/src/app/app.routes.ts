@@ -9,6 +9,7 @@ import { AuthService } from './service/auth.service';
 import { map, take } from 'rxjs/operators';
 import { AppComponent } from './app.component';
 import { CreateSpaceComponent } from './component/create-space/create-space.component';
+import { SpaceDetailsComponent } from './component/space-details/space-details.component';
 
 export const routes: Routes = [
     {
@@ -34,6 +35,11 @@ export const routes: Routes = [
     {
         path: 'create-space',
         component: CreateSpaceComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'space/:id',
+        component: SpaceDetailsComponent,
         canActivate: [AuthGuard]
     }
 ];

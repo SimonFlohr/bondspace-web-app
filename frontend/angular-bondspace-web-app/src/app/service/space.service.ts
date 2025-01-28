@@ -20,4 +20,16 @@ export class SpaceService {
   getUserSpaces(): Observable<any> {
     return this.http.get(`${this.API_URL}/user-spaces`, { withCredentials: true });
   }
+
+  getSpaceDetails(spaceId: number): Observable<any> {
+    return this.http.get(`${this.API_URL}/${spaceId}`, { withCredentials: true });
+  }
+
+  getSpaceMembers(spaceId: number): Observable<any> {
+    return this.http.get(`${this.API_URL}/${spaceId}/members`, { withCredentials: true });
+  }
+
+  getSpaceMemories(spaceId: number): Observable<any> {
+    return this.http.get(`${this.API_URL}/${spaceId}/memories`, { withCredentials: true });
+  }
 }

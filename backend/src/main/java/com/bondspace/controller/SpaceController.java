@@ -89,4 +89,73 @@ public class SpaceController {
                     .body(Map.of("message", "Failed to fetch spaces: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/{spaceId}")
+    public ResponseEntity<?> getSpaceDetails(@PathVariable int spaceId) {
+        Integer userId = sessionUtil.getLoggedInUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            Space space = spaceRepository.findByIdSimple(spaceId);
+            if (space == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Create a simplified response object
+            Map<String, Object> spaceDetails = new HashMap<>();
+            spaceDetails.put("id", space.getId());
+            spaceDetails.put("spaceName", space.getSpaceName());
+            spaceDetails.put("spaceDescription", space.getSpaceDescription());
+            spaceDetails.put("createdAt", space.getCreatedAt());
+
+            return ResponseEntity.ok(spaceDetails);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch space details: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{spaceId}/members")
+    public ResponseEntity<?> getSpaceMembers(@PathVariable int spaceId) {
+        Integer userId = sessionUtil.getLoggedInUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            List<UserSpace> userSpaces = userSpaceRepository.findAllBySpaceId(spaceId);
+            List<Map<String, Object>> members = userSpaces.stream()
+                    .map(userSpace -> {
+                        Map<String, Object> member = new HashMap<>();
+                        member.put("firstName", userSpace.getUser().getFirstName());
+                        member.put("lastName", userSpace.getUser().getLastName());
+                        member.put("role", userSpace.getUserRole().toString());
+                        return member;
+                    })
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(members);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch members: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{spaceId}/memories")
+    public ResponseEntity<?> getSpaceMemories(@PathVariable int spaceId) {
+        Integer userId = sessionUtil.getLoggedInUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            Space space = spaceRepository.findById(spaceId).orElseThrow();
+            return ResponseEntity.ok(space.getMemories());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch memories: " + e.getMessage()));
+        }
+    }
 }
