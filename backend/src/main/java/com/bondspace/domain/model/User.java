@@ -2,6 +2,9 @@ package com.bondspace.domain.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +43,10 @@ public class User {
 
     @Column(name = "user_picture")
     private String userPicture;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "notifications", columnDefinition = "integer[]")
+    private Integer[] notifications;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSpace> userSpaces = new ArrayList<>();
@@ -135,6 +142,14 @@ public class User {
 
     public void setUserPicture(String userPicture) {
         this.userPicture = userPicture;
+    }
+
+    public Integer[] getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Integer[] notifications) {
+        this.notifications = notifications;
     }
 
     public List<UserSpace> getUserSpaces() {

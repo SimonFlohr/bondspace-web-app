@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,10 +204,24 @@ public class SpaceController {
                     invitee
             );
 
-            notification.setUser(invitee);
-            invitee.getUserNotifications().add(notification);
+            // Save the notification first to get its ID
+            notification = userNotificationRepository.save(notification);
 
-            userNotificationRepository.save(notification);
+            // Get current notifications array or create new one if null
+            Integer[] currentNotifications = invitee.getNotifications();
+            Integer[] newNotifications;
+
+            if (currentNotifications == null) {
+                newNotifications = new Integer[]{notification.getId()};
+            } else {
+                newNotifications = Arrays.copyOf(currentNotifications, currentNotifications.length + 1);
+                newNotifications[newNotifications.length - 1] = notification.getId();
+            }
+
+            // Update the notifications array
+            invitee.setNotifications(newNotifications);
+
+            // Save both entities
             userRepository.save(invitee);
 
             UserSpace userSpace = new UserSpace(

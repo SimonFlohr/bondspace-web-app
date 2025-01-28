@@ -72,4 +72,11 @@ public class UserNotification implements Notification {
         return false;
     }
 
+    public void setUserWithBackReference(User user) {
+        this.user = user;
+        if (user != null && !user.getUserNotifications().contains(this)) {
+            user.getUserNotifications().add(this);
+        }
+    }
+
 }
