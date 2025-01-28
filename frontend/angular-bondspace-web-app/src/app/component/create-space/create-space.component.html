@@ -1,1 +1,61 @@
-<p>create-space works!</p>
+<div class="container-fluid bg-light min-vh-100" style="margin-top:-68px;">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-sm-8 col-md-6 col-xxl-3">
+            <div class="card shadow" style="margin-top:68px;">
+                <div class="card-header bg-white border-0 p-4">
+                    <h2 class="text-center mb-3">Create new space</h2>
+                    <p class="text-center text-muted">Create a new space where you can share memories with other members.</p>
+                </div>
+                <div class="card-body px-4">
+                    <form #createSpaceForm="ngForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="spaceName" class="form-label">Space name</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="spaceName" 
+                                [(ngModel)]="spaceName" 
+                                name="spaceName"
+                                #spaceNameInput="ngModel"
+                                placeholder="Enter space name"
+                                maxlength="25"
+                                required>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-danger" *ngIf="spaceNameInput.invalid && spaceNameInput.touched">
+                                    Space name is required
+                                </small>
+                                <small class="text-muted">
+                                    {{ spaceName.length }}/25 characters
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="spaceDescription" class="form-label">Description</label>
+                            <textarea 
+                                class="form-control" 
+                                id="spaceDescription" 
+                                [(ngModel)]="spaceDescription" 
+                                name="spaceDescription"
+                                #spaceDescriptionInput="ngModel"
+                                placeholder="Enter space description"
+                                rows="4"
+                                maxlength="140"
+                                required></textarea>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-danger" *ngIf="spaceDescriptionInput.invalid && spaceDescriptionInput.touched">
+                                    Space description is required
+                                </small>
+                                <small class="text-muted">
+                                    {{ spaceDescription.length }}/140 characters
+                                </small>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-warning" [disabled]="createSpaceForm.invalid">Create space</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
