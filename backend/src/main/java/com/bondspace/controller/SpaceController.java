@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/spaces")
@@ -54,6 +57,36 @@ public class SpaceController {
             return ResponseEntity.ok(Map.of("message", "Space created successfully"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to create space: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/user-spaces")
+    public ResponseEntity<?> getUserSpaces() {
+        Integer userId = sessionUtil.getLoggedInUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
+        }
+
+        try {
+            List<UserSpace> userSpaces = userSpaceRepository.findAllByUserId(userId);
+
+            // Create a simplified response object with only the data we need
+            List<Map<String, Object>> spacesResponse = userSpaces.stream()
+                    .map(userSpace -> {
+                        Space space = userSpace.getSpace();
+                        Map<String, Object> spaceData = new HashMap<>();
+                        spaceData.put("id", space.getId());
+                        spaceData.put("spaceName", space.getSpaceName());
+                        spaceData.put("spaceDescription", space.getSpaceDescription());
+                        return spaceData;
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(spacesResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch spaces: " + e.getMessage()));
         }
     }
 }

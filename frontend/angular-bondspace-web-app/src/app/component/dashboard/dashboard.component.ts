@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { Subscription } from 'rxjs';
+import { SpaceService } from '../../service/space.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,9 +16,13 @@ export class DashboardComponent implements OnInit {
 
   private authSubscription?: Subscription;
   userName = '';
-  userUserSpaces = [];
+  userSpaces: any[] = [];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private spaceService: SpaceService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
       this.authSubscription = this.authService.isAuthenticated().subscribe({
@@ -27,6 +32,16 @@ export class DashboardComponent implements OnInit {
               this.userName = user.firstName;
             });
           }
+        }
+      });
+
+      // Fetch user's spaces
+      this.spaceService.getUserSpaces().subscribe({
+        next: (spaces) => {
+          this.userSpaces = spaces;
+        },
+        error: (error) => {
+          console.error('Failed to fetch spaces:', error);
         }
       });
   }

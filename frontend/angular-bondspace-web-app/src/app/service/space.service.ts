@@ -16,4 +16,8 @@ export class SpaceService {
       spaceDescription
     }, { withCredentials: true });
   }
+
+  getUserSpaces(): Observable<any> {
+    return this.http.get(`${this.API_URL}/user-spaces`, { withCredentials: true });
+  }
 }
