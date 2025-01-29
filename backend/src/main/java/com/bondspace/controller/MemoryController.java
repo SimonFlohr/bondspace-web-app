@@ -9,6 +9,7 @@ import com.bondspace.repository.UserRepository;
 import com.bondspace.util.SessionUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -115,6 +116,49 @@ public class MemoryController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Debug failed: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{memoryId}")
+    @Transactional
+    public ResponseEntity<?> deleteMemory(@PathVariable int memoryId) {
+        try {
+            Integer userId = sessionUtil.getLoggedInUserId();
+            if (userId == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "User not authenticated"));
+            }
+
+            Memory memory = memoryRepository.findById(memoryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Memory not found"));
+
+            if (memory.getUploadedBy().getId() != userId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Only the owner can delete a memory"));
+            }
+
+            // Get the space and update its memory array first
+            Space space = memory.getSpace();
+            Set<Memory> updatedMemories = space.getMemories();
+            updatedMemories.remove(memory);
+            space.setMemories(updatedMemories);
+
+            // Update memoryIds array
+            Integer[] currentIds = space.getMemoryIds();
+            if (currentIds != null) {
+                Integer[] newIds = Arrays.stream(currentIds)
+                        .filter(id -> id != memoryId)
+                        .toArray(Integer[]::new);
+                space.setMemoryIds(newIds);
+            }
+
+            spaceRepository.save(space);
+            memoryRepository.delete(memory);
+
+            return ResponseEntity.ok(Map.of("message", "Memory deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to delete memory: " + e.getMessage()));
         }
     }
 }

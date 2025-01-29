@@ -4,6 +4,7 @@ import { SpaceService } from '../../service/space.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
+import { MemoryService } from '../../service/memory.service';
 
 @Component({
   selector: 'app-space-details',
@@ -26,7 +27,8 @@ export class SpaceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private spaceService: SpaceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private memoryService: MemoryService
   ) {}
 
   ngOnInit() {
@@ -113,5 +115,26 @@ export class SpaceDetailsComponent implements OnInit {
 
   selectMemory(memory: any) {
     this.selectedMemory = memory;
+  }
+
+  isMemoryOwner(memory: any): boolean {
+    return memory.uploadedBy.firstName === this.currentUserName;
+  }
+
+  deleteMemory(memoryId: number) {
+    if (confirm('Are you sure you want to delete this memory?')) {
+      this.memoryService.deleteMemory(memoryId).subscribe({
+        next: () => {
+          this.loadSpaceDetails();
+          const modalElement = document.getElementById('memoryModal');
+          const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
+          closeButton?.click();
+        },
+        error: (error) => {
+          console.error('Failed to delete memory:', error);
+          alert(error.error?.message || 'Failed to delete memory');
+        }
+      });
+    }
   }
 }
