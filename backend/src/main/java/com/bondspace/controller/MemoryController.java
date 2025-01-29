@@ -60,11 +60,21 @@ public class MemoryController {
                 memory.setTags(tags);
             }
 
-            // Add memory to space's memories set
-            space.getMemories().add(memory);
+            // Save memory to get its ID
+            memory = memoryRepository.save(memory);
 
-            // Save both entities
-            memoryRepository.save(memory);
+            // Update space's memoryIds array
+            Integer[] currentMemories = space.getMemoryIds();
+            Integer[] newMemories;
+
+            if (currentMemories == null) {
+                newMemories = new Integer[]{memory.getId()};
+            } else {
+                newMemories = Arrays.copyOf(currentMemories, currentMemories.length + 1);
+                newMemories[newMemories.length - 1] = memory.getId();
+            }
+
+            space.setMemoryIds(newMemories);
             spaceRepository.save(space);
 
             return ResponseEntity.ok(Map.of("message", "Memory created successfully"));

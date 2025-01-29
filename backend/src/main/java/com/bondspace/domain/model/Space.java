@@ -45,6 +45,9 @@ public class Space {
     private Set<SpaceNotification> spaceNotifications = new HashSet<>();
 
     @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "memories", columnDefinition = "integer[]")
+    private Integer[] memoryIds;
+
     @OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Memory> memories = new HashSet<>();
 
@@ -63,6 +66,14 @@ public class Space {
     }
 
     // GETTERS & SETTERS
+    public Integer[] getMemoryIds() {
+        return memoryIds;
+    }
+
+    public void setMemoryIds(Integer[] memoryIds) {
+        this.memoryIds = memoryIds;
+    }
+
     public int getId() {
         return id;
     }
