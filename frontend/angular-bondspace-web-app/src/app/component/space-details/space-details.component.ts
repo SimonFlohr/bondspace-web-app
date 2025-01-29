@@ -20,6 +20,7 @@ export class SpaceDetailsComponent implements OnInit {
   emailAddress: string = '';
   isOwner: boolean = false;
   currentUserName: string = '';
+  selectedMemory: any = null;
   
   constructor(
     private route: ActivatedRoute,
@@ -108,5 +109,9 @@ export class SpaceDetailsComponent implements OnInit {
         }
       });
     }
+  }
+
+  selectMemory(memory: any) {
+    this.selectedMemory = memory;
   }
 }

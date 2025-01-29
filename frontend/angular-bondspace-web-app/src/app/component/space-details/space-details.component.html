@@ -32,11 +32,11 @@
                             data-bs-target="#inviteModal">
                         Invite User
                     </button>
-                    <div class="vstack gap-2">
+                    <div class="vstack gap-1">
                         <div *ngFor="let member of members" 
                              class="d-flex gap-4 justify-content-between align-items-center p-1 border clickable-space">
                             <span style="font-weight: 400;">{{ member.firstName }} {{ member.lastName }}</span>
-                            <span class="badge bg-warning">{{ member.role }}</span>
+                            <span class="badge" style="background-color: #b7b9c0;">{{ member.role }}</span>
                         </div>
                         <span class="d-flex justify-content-center align-items-center p-4" 
                               style="color: #a1a1a1" 
@@ -54,12 +54,16 @@
                             Create memory
                         </button>
                     </div>
-                    <div class="vstack gap-2">
+                    <div class="vstack gap-1">
                         <div *ngFor="let memory of memories" 
-                             class="d-flex gap-4 justify-content-between align-items-center p-4 border clickable-space">
+                            class="d-flex gap-4 justify-content-between align-items-center border clickable-space"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#memoryModal"
+                            (click)="selectMemory(memory)"
+                            style="padding: 5px;">
                             <div>
                                 <h6 style="font-weight: 400;">{{ memory.name }}</h6>
-                                <p class="text-muted mb-0">Created by {{ memory.uploadedBy.firstName }} · {{ memory.createdAt | date }}</p>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">Created by {{ memory.uploadedBy.firstName }} · {{ memory.createdAt | date }}</p>
                             </div>
                             <span class="badge bg-secondary">{{ memory.type }}</span>
                         </div>
@@ -101,6 +105,33 @@
                         data-bs-dismiss="modal">
                     Send Invitation
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="memoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ selectedMemory?.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <small class="text-muted">Posted by {{ selectedMemory?.uploadedBy?.firstName }} · {{ selectedMemory?.createdAt | date }}</small>
+                </div>
+                <!-- Tags section with better styling -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary" *ngFor="let tag of selectedMemory?.tags ?? []">
+                            #{{ tag }}
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Content</h6>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ selectedMemory?.textContent }}</p>
+                </div>
             </div>
         </div>
     </div>
