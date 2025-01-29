@@ -58,7 +58,8 @@ export class SpaceDetailsComponent implements OnInit {
 
     this.spaceService.getSpaceNotifications(this.spaceId).subscribe({
       next: (data) => {
-        this.spaceNotifications = data;
+        // Take only the last 3 notifications
+        this.spaceNotifications = data.slice(-3);
       },
       error: (error) => console.error('Error loading notifications:', error)
     });
