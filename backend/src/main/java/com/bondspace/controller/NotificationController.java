@@ -1,8 +1,10 @@
 package com.bondspace.controller;
 
+import com.bondspace.domain.model.SpaceNotification;
 import com.bondspace.domain.model.User;
 import com.bondspace.domain.model.UserSpace;
 import com.bondspace.domain.model.enums.SpaceUserRole;
+import com.bondspace.repository.SpaceNotificationRepository;
 import com.bondspace.repository.UserNotificationRepository;
 import com.bondspace.repository.UserRepository;
 import com.bondspace.repository.UserSpaceRepository;
@@ -30,6 +32,9 @@ public class NotificationController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SpaceNotificationRepository spaceNotificationRepository;
 
     @Autowired
     private SessionUtil sessionUtil;
@@ -91,6 +96,14 @@ public class NotificationController {
             // Update the role from INVITEE to MEMBER
             inviteeSpace.setUserRole(SpaceUserRole.MEMBER);
             userSpaceRepository.save(inviteeSpace);
+
+            // Create space notification
+            SpaceNotification spaceNotification = new SpaceNotification(
+                    "MEMBER_JOINED",
+                    String.format("%s %s joined the space", user.getFirstName(), user.getLastName()),
+                    inviteeSpace.getSpace()
+            );
+            spaceNotificationRepository.save(spaceNotification);
 
             // Remove notification ID from user's notifications array
             removeNotificationFromUser(user, notificationId);

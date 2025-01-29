@@ -281,4 +281,30 @@ public class SpaceController {
                     .body(Map.of("message", "Failed to send invitation: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/{spaceId}/notifications")
+    @Transactional
+    public ResponseEntity<?> getSpaceNotifications(@PathVariable int spaceId) {
+        try {
+            Space space = spaceRepository.findById(spaceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Space not found"));
+
+            // Force initialization of notifications
+            space.getSpaceNotifications().size();
+
+            List<Map<String, Object>> notifications = space.getSpaceNotifications().stream()
+                    .map(notification -> {
+                        Map<String, Object> dto = new HashMap<>();
+                        dto.put("id", notification.getId());
+                        dto.put("message", notification.getMessage());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(notifications);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch notifications: " + e.getMessage()));
+        }
+    }
 }

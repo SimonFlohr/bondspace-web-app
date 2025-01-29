@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { MemoryService } from '../../service/memory.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-space-details',
@@ -22,6 +23,7 @@ export class SpaceDetailsComponent implements OnInit {
   isOwner: boolean = false;
   currentUserName: string = '';
   selectedMemory: any = null;
+  spaceNotifications: any[] = [];
   
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +54,13 @@ export class SpaceDetailsComponent implements OnInit {
         this.space = data;
       },
       error: (error) => console.error('Error loading space details:', error)
+    });
+
+    this.spaceService.getSpaceNotifications(this.spaceId).subscribe({
+      next: (data) => {
+        this.spaceNotifications = data;
+      },
+      error: (error) => console.error('Error loading notifications:', error)
     });
 
     // Load members and check if current user is owner

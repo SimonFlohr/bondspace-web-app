@@ -42,4 +42,8 @@ export class SpaceService {
       emailAddress
     }, { withCredentials: true });
   }
+
+  getSpaceNotifications(spaceId: number): Observable<any> {
+    return this.http.get(`${this.API_URL}/${spaceId}/notifications`, { withCredentials: true });
+  }
 }
