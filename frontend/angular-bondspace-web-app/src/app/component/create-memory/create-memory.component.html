@@ -1,0 +1,126 @@
+<!-- create-memory.component.html -->
+<div class="container-fluid bg-light min-vh-100" style="margin-top:-68px;">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-sm-8 col-md-6 col-xxl-3">
+      <div class="card shadow" style="margin-top:68px;">
+        <div class="card-header bg-white border-0 p-4">
+          <h2 class="text-center mb-3">Create new memory</h2>
+          <p class="text-center text-muted">Add a new memory to your space.</p>
+        </div>
+        <div class="card-body px-4">
+          <form #createMemoryForm="ngForm" (ngSubmit)="onSubmit()">
+            <!-- Name field -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="name" 
+                [(ngModel)]="name" 
+                name="name"
+                #nameInput="ngModel"
+                maxlength="40"
+                required>
+              <div class="d-flex justify-content-between mt-1">
+                <small class="text-danger" *ngIf="nameInput.invalid && nameInput.touched">
+                  Name is required
+                </small>
+                <small class="text-muted">
+                  {{ name.length }}/40 characters
+                </small>
+              </div>
+            </div>
+
+            <!-- Tag field -->
+            <div class="mb-3">
+              <label for="tag" class="form-label">Tag</label>
+              
+              <!-- Tag Selection -->
+              <div class="mb-2" *ngIf="!showNewTagInput">
+                <select 
+                  class="form-select"
+                  [(ngModel)]="tag"
+                  name="tag"
+                  #tagSelect="ngModel"
+                  required
+                  (change)="selectTag($event)">
+                  <option value="" disabled selected>Select a tag</option>
+                  <option *ngFor="let existingTag of existingTags" [value]="existingTag">
+                    {{ existingTag }}
+                  </option>
+                </select>
+              </div>
+              
+              <!-- New tag input -->
+              <div *ngIf="showNewTagInput" class="input-group mb-2">
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [(ngModel)]="newTag"
+                  name="newTag"
+                  maxlength="20"
+                  placeholder="Enter new tag">
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="addNewTag()"
+                  [disabled]="!newTag.trim()">
+                  Add
+                </button>
+              </div>
+
+              <!-- Toggle button -->
+              <button 
+                type="button" 
+                class="btn btn-link p-0" 
+                (click)="toggleNewTagInput()">
+                {{ showNewTagInput ? 'Select existing tag' : 'Create new tag' }}
+              </button>
+
+              <div class="d-flex justify-content-between mt-1" *ngIf="showNewTagInput">
+                <small class="text-muted">
+                  {{ newTag.length }}/20 characters
+                </small>
+              </div>
+            </div>
+
+            <!-- Content field -->
+            <div class="mb-4">
+              <label for="textContent" class="form-label">Content</label>
+              <textarea 
+                class="form-control" 
+                id="textContent" 
+                [(ngModel)]="textContent" 
+                name="textContent"
+                #textContentInput="ngModel"
+                rows="4"
+                (ngModelChange)="checkWordCount()"
+                required></textarea>
+              <div class="d-flex justify-content-between mt-1">
+                <small class="text-danger" *ngIf="textContentInput.invalid && textContentInput.touched">
+                  Content is required
+                </small>
+                <small [class]="wordCount > 70 ? 'text-danger' : 'text-muted'">
+                  {{ wordCount }}/70 words
+                </small>
+              </div>
+              <small class="text-danger" *ngIf="wordCount > 70">
+                Content exceeds maximum word limit
+              </small>
+            </div>
+
+            <!-- Submit button -->
+            <div class="d-grid gap-2 mb-4">
+              <button 
+                type="submit" 
+                class="btn btn-warning" 
+                [disabled]="createMemoryForm.invalid || wordCount > 70">
+                Create memory
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

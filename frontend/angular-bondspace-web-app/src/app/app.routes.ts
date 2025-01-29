@@ -10,6 +10,7 @@ import { map, take } from 'rxjs/operators';
 import { AppComponent } from './app.component';
 import { CreateSpaceComponent } from './component/create-space/create-space.component';
 import { SpaceDetailsComponent } from './component/space-details/space-details.component';
+import { CreateMemoryComponent } from './component/create-memory/create-memory.component';
 
 export const routes: Routes = [
     {
@@ -40,6 +41,11 @@ export const routes: Routes = [
     {
         path: 'space/:id',
         component: SpaceDetailsComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'space/:id/create-memory',
+        component: CreateMemoryComponent,
         canActivate: [AuthGuard]
     }
 ];
