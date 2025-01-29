@@ -2,15 +2,9 @@ package com.bondspace.controller;
 
 import com.bondspace.domain.dto.CreateSpaceRequestDTO;
 import com.bondspace.domain.dto.InviteUserRequestDTO;
-import com.bondspace.domain.model.Space;
-import com.bondspace.domain.model.User;
-import com.bondspace.domain.model.UserNotification;
-import com.bondspace.domain.model.UserSpace;
+import com.bondspace.domain.model.*;
 import com.bondspace.domain.model.enums.SpaceUserRole;
-import com.bondspace.repository.SpaceRepository;
-import com.bondspace.repository.UserNotificationRepository;
-import com.bondspace.repository.UserRepository;
-import com.bondspace.repository.UserSpaceRepository;
+import com.bondspace.repository.*;
 import com.bondspace.util.SessionUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +30,9 @@ public class SpaceController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MemoryRepository memoryRepository;
 
     @Autowired
     private UserNotificationRepository userNotificationRepository;
@@ -187,14 +184,27 @@ public class SpaceController {
 
     @GetMapping("/{spaceId}/memories")
     public ResponseEntity<?> getSpaceMemories(@PathVariable int spaceId) {
-        Integer userId = sessionUtil.getLoggedInUserId();
-        if (userId == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "User not authenticated"));
-        }
-
         try {
-            Space space = spaceRepository.findById(spaceId).orElseThrow();
-            return ResponseEntity.ok(space.getMemories());
+            List<Memory> memories = memoryRepository.findBySpaceId(spaceId);
+
+            List<Map<String, Object>> memoryDTOs = memories.stream()
+                    .map(memory -> {
+                        Map<String, Object> dto = new HashMap<>();
+                        dto.put("id", memory.getId());
+                        dto.put("name", memory.getName());
+                        dto.put("type", memory.getType());
+                        dto.put("textContent", memory.getTextContent());
+                        dto.put("createdAt", memory.getCreatedAt());
+
+                        Map<String, String> uploadedBy = new HashMap<>();
+                        uploadedBy.put("firstName", memory.getUploadedBy().getFirstName());
+                        dto.put("uploadedBy", uploadedBy);
+
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(memoryDTOs);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Failed to fetch memories: " + e.getMessage()));
