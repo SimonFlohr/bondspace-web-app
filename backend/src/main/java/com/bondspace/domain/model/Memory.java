@@ -60,7 +60,7 @@ public class Memory {
         this.type = type;
         this.name = name;
         this.uploadedBy = uploadedBy;
-        this.space = space;
+        this.setSpace(space);
     }
 
     // GETTERS & SETTERS
@@ -142,6 +142,9 @@ public class Memory {
 
     public void setSpace(Space space) {
         this.space = space;
+        if (space != null) {
+            space.getMemories().add(this);
+        }
     }
 
     public User getUploadedBy() {

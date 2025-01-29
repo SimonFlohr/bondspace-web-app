@@ -79,20 +79,20 @@ export class CreateMemoryComponent implements OnInit {
 
   onSubmit() {
     if (this.name && this.tag && this.textContent && this.wordCount <= 70) {
-      this.memoryService.createMemory(
-        this.spaceId,
-        this.name,
-        [this.tag],
-        this.textContent
-      ).subscribe({
-        next: () => {
-          this.router.navigate(['/space', this.spaceId]);
-        },
-        error: (error) => {
-          console.error('Failed to create memory:', error);
-          alert(error.error?.message || 'Failed to create memory');
-        }
-      });
+        this.memoryService.createMemory(
+            this.spaceId,
+            this.name,
+            [this.tag], // Send tag as an array
+            this.textContent
+        ).subscribe({
+            next: () => {
+                this.router.navigate(['/space', this.spaceId]);
+            },
+            error: (error) => {
+                console.error('Failed to create memory:', error);
+                alert(error.error?.message || 'Failed to create memory');
+            }
+        });
     }
   }
 }

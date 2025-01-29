@@ -13,10 +13,10 @@ export class MemoryService {
 
   createMemory(spaceId: number, name: string, tags: string[], textContent: string): Observable<any> {
     return this.http.post(`${this.API_URL}/create`, {
-      spaceId,
-      name,
-      tags,
-      textContent
+        spaceId,
+        name,
+        tags,
+        textContent
     }, { withCredentials: true });
   }
 
