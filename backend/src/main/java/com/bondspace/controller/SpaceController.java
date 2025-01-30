@@ -35,6 +35,9 @@ public class SpaceController {
     private MemoryRepository memoryRepository;
 
     @Autowired
+    private SpaceNotificationRepository spaceNotificationRepository;
+
+    @Autowired
     private UserNotificationRepository userNotificationRepository;
 
     @Autowired
@@ -305,6 +308,23 @@ public class SpaceController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Failed to fetch notifications: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{spaceId}/notifications/{notificationId}")
+    public ResponseEntity<?> deleteNotification(
+            @PathVariable int spaceId,
+            @PathVariable int notificationId) {
+        try {
+            Space space = spaceRepository.findById(spaceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Space not found"));
+
+            spaceNotificationRepository.deleteById(notificationId);
+
+            return ResponseEntity.ok(Map.of("message", "Notification deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to delete notification: " + e.getMessage()));
         }
     }
 }

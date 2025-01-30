@@ -147,4 +147,17 @@ export class SpaceDetailsComponent implements OnInit {
       });
     }
   }
+
+  deleteNotification(notificationId: number) {
+    this.spaceService.deleteNotification(this.spaceId, notificationId).subscribe({
+      next: () => {
+        this.spaceNotifications = this.spaceNotifications
+          .filter(n => n.id !== notificationId);
+      },
+      error: (error) => {
+        console.error('Failed to delete notification:', error);
+        alert(error.error?.message || 'Failed to delete notification');
+      }
+    });
+  }
 }

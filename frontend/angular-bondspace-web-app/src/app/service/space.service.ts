@@ -46,4 +46,11 @@ export class SpaceService {
   getSpaceNotifications(spaceId: number): Observable<any> {
     return this.http.get(`${this.API_URL}/${spaceId}/notifications`, { withCredentials: true });
   }
+
+  deleteNotification(spaceId: number, notificationId: number): Observable<any> {
+    return this.http.delete(
+      `${this.API_URL}/${spaceId}/notifications/${notificationId}`, 
+      { withCredentials: true }
+    );
+  }
 }
