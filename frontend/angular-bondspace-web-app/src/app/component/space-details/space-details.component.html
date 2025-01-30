@@ -78,7 +78,7 @@
                             style="padding: 5px;">
                             <div>
                                 <h6 style="font-weight: 400;">{{ memory.name }}</h6>
-                                <p class="text-muted mb-0" style="font-size: 0.8rem;">Created by {{ memory.uploadedBy.firstName }} · {{ memory.createdAt | date }}</p>
+                                <p class="text-muted mb-0" style="font-size: 0.8rem;">Created by {{ memory.uploadedBy.firstName }} {{ memory.uploadedBy.lastName }} · {{ memory.createdAt | date }}</p>
                             </div>
                             <span class="badge bg-secondary">{{ memory.type }}</span>
                         </div>
@@ -133,7 +133,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <small class="text-muted">Posted by {{ selectedMemory?.uploadedBy?.firstName }} · {{ selectedMemory?.createdAt | date }}</small>
+                    <small class="text-muted">Created by {{ selectedMemory?.uploadedBy?.firstName }} {{ selectedMemory?.uploadedBy?.lastName }} · {{ selectedMemory?.createdAt | date }}</small>
                 </div>
                 <!-- Tags section with better styling -->
                 <div class="mb-4">

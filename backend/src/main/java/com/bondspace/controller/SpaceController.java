@@ -201,6 +201,7 @@ public class SpaceController {
 
                         Map<String, String> uploadedBy = new HashMap<>();
                         uploadedBy.put("firstName", memory.getUploadedBy().getFirstName());
+                        uploadedBy.put("lastName", memory.getUploadedBy().getLastName());
                         dto.put("uploadedBy", uploadedBy);
                         dto.put("tags", memory.getTags());
 
