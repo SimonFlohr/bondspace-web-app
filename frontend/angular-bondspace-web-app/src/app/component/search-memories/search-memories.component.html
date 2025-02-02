@@ -71,3 +71,47 @@
         </div>
     </div>
 </div>
+<!-- Memory Modal -->
+<div class="modal fade" id="memoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ selectedMemory?.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <small class="text-muted">Created by {{ selectedMemory?.uploadedBy?.firstName }} {{ selectedMemory?.uploadedBy?.lastName }} · {{ selectedMemory?.createdAt | date }}</small>
+                </div>
+                <!-- Tags section -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary" *ngFor="let tag of selectedMemory?.tags ?? []">
+                            #{{ tag }}
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Content</h6>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ selectedMemory?.textContent }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button 
+                        *ngIf="selectedMemory && isMemoryOwner(selectedMemory)"
+                        type="button" 
+                        class="btn btn-primary" 
+                        (click)="editMemory(selectedMemory)">
+                        Edit Memory
+                    </button>
+                    <button 
+                        *ngIf="selectedMemory && isMemoryOwner(selectedMemory)"
+                        type="button" 
+                        class="btn btn-danger" 
+                        (click)="deleteMemory(selectedMemory.id)">
+                        Delete Memory
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+        </div>
+    </div>
+</div>

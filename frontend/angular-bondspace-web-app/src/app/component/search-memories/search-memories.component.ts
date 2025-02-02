@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { SpaceService } from '../../service/space.service';
+import { MemoryService } from '../../service/memory.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-search-memories',
@@ -19,11 +21,15 @@ export class SearchMemoriesComponent implements OnInit {
   searchTerm: string = '';
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
+  selectedMemory: any = null;
+  currentUserName: string = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private spaceService: SpaceService
+    private spaceService: SpaceService,
+    private memoryService: MemoryService,
+    private authService: AuthService
   ) {
     this.route.params.subscribe(params => {
       this.spaceId = +params['id'];
@@ -32,12 +38,52 @@ export class SearchMemoriesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUserName = user.firstName;
+      },
+      error: (error) => console.error('Error getting current user:', error)
+    });
     this.spaceService.getSpaceDetails(this.spaceId).subscribe({
       next: (data) => {
         this.space = data;
       },
       error: (error) => console.error('Error loading space details:', error)
     });
+  }
+
+  isMemoryOwner(memory: any): boolean {
+    return memory.uploadedBy.firstName === this.currentUserName;
+  }
+
+  editMemory(memory: any) {
+    // Close the current modal
+    const modalElement = document.getElementById('memoryModal');
+    const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
+    closeButton?.click();
+    
+    // Navigate to edit route
+    this.router.navigate(['/space', this.spaceId, 'edit-memory', memory.id]);
+  }
+
+  deleteMemory(memoryId: number) {
+    if (confirm('Are you sure you want to delete this memory?')) {
+      this.memoryService.deleteMemory(memoryId).subscribe({
+        next: () => {
+          // Close the modal
+          const modalElement = document.getElementById('memoryModal');
+          const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
+          closeButton?.click();
+          
+          // Reload memories to update the list
+          this.loadMemories();
+        },
+        error: (error) => {
+          console.error('Failed to delete memory:', error);
+          alert(error.error?.message || 'Failed to delete memory');
+        }
+      });
+    }
   }
 
   loadMemories() {
@@ -107,12 +153,7 @@ export class SearchMemoriesComponent implements OnInit {
   }
 
   viewMemory(memory: any) {
-    // Use the same memory viewing logic as in space-details component
-    this.router.navigate(['/space', this.spaceId], { 
-      queryParams: { 
-        openMemory: memory.id 
-      }
-    });
+    this.selectedMemory = memory;
   }
 
   goBack() {
