@@ -152,6 +152,13 @@
                 <button 
                     *ngIf="selectedMemory && isMemoryOwner(selectedMemory)"
                     type="button" 
+                    class="btn btn-primary" 
+                    (click)="editMemory(selectedMemory)">
+                    Edit Memory
+                </button>
+                <button 
+                    *ngIf="selectedMemory && isMemoryOwner(selectedMemory)"
+                    type="button" 
                     class="btn btn-danger" 
                     (click)="deleteMemory(selectedMemory.id)">
                         Delete Memory

@@ -31,4 +31,12 @@ export class MemoryService {
   getSpaceTags(spaceId: number): Observable<string[]> {
     return this.http.get<string[]>(`${this.API_URL}/space/${spaceId}/tags`, { withCredentials: true });
   }
+
+  updateMemory(memoryId: number, name: string, tags: string[], textContent: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/${memoryId}`, {
+        name,
+        tags,
+        textContent
+    }, { withCredentials: true });
+  }
 }

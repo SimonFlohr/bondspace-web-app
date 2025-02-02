@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { CreateSpaceComponent } from './component/create-space/create-space.component';
 import { SpaceDetailsComponent } from './component/space-details/space-details.component';
 import { CreateMemoryComponent } from './component/create-memory/create-memory.component';
+import { EditMemoryComponent } from './component/edit-memory/edit-memory.component';
 
 export const routes: Routes = [
     {
@@ -46,6 +47,11 @@ export const routes: Routes = [
     {
         path: 'space/:id/create-memory',
         component: CreateMemoryComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'space/:id/edit-memory/:memoryId',
+        component: EditMemoryComponent,
         canActivate: [AuthGuard]
     }
 ];

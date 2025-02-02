@@ -161,4 +161,72 @@ public class MemoryController {
                     .body(Map.of("message", "Failed to delete memory: " + e.getMessage()));
         }
     }
+
+    @PutMapping("/{memoryId}")
+    @Transactional
+    public ResponseEntity<?> updateMemory(
+            @PathVariable int memoryId,
+            @RequestBody Map<String, Object> request) {
+        try {
+            Integer userId = sessionUtil.getLoggedInUserId();
+            if (userId == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "User not authenticated"));
+            }
+
+            // Find the memory
+            Memory memory = memoryRepository.findById(memoryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Memory not found"));
+
+            // Check if the user is the owner
+            if (memory.getUploadedBy().getId() != userId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Only the owner can edit a memory"));
+            }
+
+            // Update the memory fields
+            memory.setName((String) request.get("name"));
+            memory.setTextContent((String) request.get("textContent"));
+
+            // Update tags
+            @SuppressWarnings("unchecked")
+            List<String> tags = (List<String>) request.get("tags");
+            if (tags != null && !tags.isEmpty()) {
+                memory.setTags(tags);
+            }
+
+            // Save the updated memory
+            memoryRepository.save(memory);
+
+            return ResponseEntity.ok(Map.of("message", "Memory updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to update memory: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{memoryId}")
+    public ResponseEntity<?> getMemory(@PathVariable int memoryId) {
+        try {
+            Memory memory = memoryRepository.findById(memoryId)
+                    .orElseThrow(() -> new IllegalArgumentException("Memory not found"));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", memory.getId());
+            response.put("name", memory.getName());
+            response.put("textContent", memory.getTextContent());
+            response.put("tags", memory.getTags());
+            response.put("type", memory.getType());
+            response.put("createdAt", memory.getCreatedAt());
+
+            Map<String, String> uploadedBy = new HashMap<>();
+            uploadedBy.put("firstName", memory.getUploadedBy().getFirstName());
+            response.put("uploadedBy", uploadedBy);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Failed to fetch memory: " + e.getMessage()));
+        }
+    }
 }

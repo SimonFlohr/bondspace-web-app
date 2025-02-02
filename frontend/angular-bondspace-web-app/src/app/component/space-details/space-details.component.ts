@@ -148,6 +148,16 @@ export class SpaceDetailsComponent implements OnInit {
     }
   }
 
+  editMemory(memory: any) {
+    // Close the current modal
+    const modalElement = document.getElementById('memoryModal');
+    const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
+    closeButton?.click();
+    
+    // Navigate to edit route with memory ID
+    this.router.navigate(['/space', this.spaceId, 'edit-memory', memory.id]);
+  }
+
   deleteNotification(notificationId: number) {
     this.spaceService.deleteNotification(this.spaceId, notificationId).subscribe({
       next: () => {
