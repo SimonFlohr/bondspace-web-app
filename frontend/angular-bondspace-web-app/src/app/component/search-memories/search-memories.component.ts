@@ -13,6 +13,7 @@ import { SpaceService } from '../../service/space.service';
 })
 export class SearchMemoriesComponent implements OnInit {
   spaceId: number = 0;
+  space: any = {};
   memories: any[] = [];
   filteredMemories: any[] = [];
   searchTerm: string = '';
@@ -31,7 +32,12 @@ export class SearchMemoriesComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Initial load handled in constructor
+    this.spaceService.getSpaceDetails(this.spaceId).subscribe({
+      next: (data) => {
+        this.space = data;
+      },
+      error: (error) => console.error('Error loading space details:', error)
+    });
   }
 
   loadMemories() {
