@@ -218,6 +218,7 @@ public class MemoryController {
             response.put("tags", memory.getTags());
             response.put("type", memory.getType());
             response.put("createdAt", memory.getCreatedAt());
+            response.put("updatedAt", memory.getUpdatedAt());
 
             Map<String, String> uploadedBy = new HashMap<>();
             uploadedBy.put("firstName", memory.getUploadedBy().getFirstName());

@@ -65,9 +65,14 @@
                 <div class="vstack gap-2">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 style="font-weight: 400;">Memories</h5>
-                        <button class="btn btn-warning" style="width: 150px;" [routerLink]="['/space', space.id, 'create-memory']">
-                            Create memory
-                        </button>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" style="width: 150px;" [routerLink]="['/space', space.id, 'search-memories']">
+                                Search memories
+                            </button>
+                            <button class="btn btn-warning" style="width: 150px;" [routerLink]="['/space', space.id, 'create-memory']">
+                                Create memory
+                            </button>
+                        </div>
                     </div>
                     <div class="vstack gap-1">
                         <div *ngFor="let memory of memories" 

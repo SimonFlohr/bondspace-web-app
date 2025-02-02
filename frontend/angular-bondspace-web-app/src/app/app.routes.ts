@@ -12,6 +12,7 @@ import { CreateSpaceComponent } from './component/create-space/create-space.comp
 import { SpaceDetailsComponent } from './component/space-details/space-details.component';
 import { CreateMemoryComponent } from './component/create-memory/create-memory.component';
 import { EditMemoryComponent } from './component/edit-memory/edit-memory.component';
+import { SearchMemoriesComponent } from './component/search-memories/search-memories.component';
 
 export const routes: Routes = [
     {
@@ -52,6 +53,11 @@ export const routes: Routes = [
     {
         path: 'space/:id/edit-memory/:memoryId',
         component: EditMemoryComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'space/:id/search-memories',
+        component: SearchMemoriesComponent,
         canActivate: [AuthGuard]
     }
 ];

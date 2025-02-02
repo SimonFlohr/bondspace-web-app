@@ -198,6 +198,7 @@ public class SpaceController {
                         dto.put("type", memory.getType());
                         dto.put("textContent", memory.getTextContent());
                         dto.put("createdAt", memory.getCreatedAt());
+                        dto.put("updatedAt", memory.getUpdatedAt());
 
                         Map<String, String> uploadedBy = new HashMap<>();
                         uploadedBy.put("firstName", memory.getUploadedBy().getFirstName());

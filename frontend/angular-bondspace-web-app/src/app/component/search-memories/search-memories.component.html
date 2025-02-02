@@ -1,0 +1,73 @@
+<div class="container-fluid bg-white">
+    <div class="row justify-content-center p-4">
+        <div class="col-sm-10 col-md-10 col-xl-10 col-xxl-8" style="max-width: 1200px;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Search Memories</h2>
+                <button class="btn btn-secondary" (click)="goBack()">Back to Space</button>
+            </div>
+
+            <!-- Search bar -->
+            <div class="mb-4">
+                <input type="text" class="form-control" placeholder="Search memories..." [(ngModel)]="searchTerm"
+                    (input)="onSearch()">
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th (click)="sort('name')" style="cursor: pointer">
+                                Memory name
+                                <i *ngIf="sortField === 'name'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th (click)="sort('type')" style="cursor: pointer">
+                                Memory type
+                                <i *ngIf="sortField === 'type'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th (click)="sort('tags')" style="cursor: pointer">
+                                Tag
+                                <i *ngIf="sortField === 'tags'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th (click)="sort('uploadedBy')" style="cursor: pointer">
+                                Created by
+                                <i *ngIf="sortField === 'uploadedBy'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th (click)="sort('createdAt')" style="cursor: pointer">
+                                Created at
+                                <i *ngIf="sortField === 'createdAt'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th (click)="sort('updatedAt')" style="cursor: pointer">
+                                Updated at
+                                <i *ngIf="sortField === 'updatedAt'"
+                                    [class]="sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let memory of filteredMemories">
+                            <td>{{ memory.name }}</td>
+                            <td>{{ memory.type }}</td>
+                            <td>{{ memory.tags?.join(', ') }}</td>
+                            <td>{{ memory.uploadedBy?.firstName }} {{ memory.uploadedBy?.lastName }}</td>
+                            <td>{{ memory.createdAt | date:'medium' }}</td>
+                            <td>{{ memory.updatedAt | date:'medium' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning me-2" (click)="viewMemory(memory)"
+                                    data-bs-toggle="modal" data-bs-target="#memoryModal">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
