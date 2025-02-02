@@ -24,6 +24,14 @@ export class SpaceDetailsComponent implements OnInit {
   currentUserName: string = '';
   selectedMemory: any = null;
   spaceNotifications: any[] = [];
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 1;
+  get paginatedMemories() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.memories.slice(startIndex, endIndex);
+  }
   
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +55,10 @@ export class SpaceDetailsComponent implements OnInit {
     });
   }
 
+  onPageChange(page: number) {
+    this.currentPage = page;
+  }
+
   loadSpaceDetails() {
     // Load space details
     this.spaceService.getSpaceDetails(this.spaceId).subscribe({
@@ -62,6 +74,14 @@ export class SpaceDetailsComponent implements OnInit {
         this.spaceNotifications = data.slice(-3);
       },
       error: (error) => console.error('Error loading notifications:', error)
+    });
+
+    this.spaceService.getSpaceMemories(this.spaceId).subscribe({
+      next: (memories) => {
+        this.memories = memories;
+        this.totalPages = Math.ceil(this.memories.length / this.pageSize);
+      },
+      error: (error) => console.error('Error loading memories:', error)
     });
 
     // Load members and check if current user is owner

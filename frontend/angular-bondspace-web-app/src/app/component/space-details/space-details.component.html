@@ -75,18 +75,45 @@
                         </div>
                     </div>
                     <div class="vstack gap-1">
-                        <div *ngFor="let memory of memories" 
-                            class="d-flex gap-4 justify-content-between align-items-center border clickable-space"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#memoryModal"
-                            (click)="selectMemory(memory)"
-                            style="padding: 5px;">
+                        <div *ngFor="let memory of paginatedMemories"
+                            class="d-flex gap-4 justify-content-between align-items-center border clickable-space" data-bs-toggle="modal"
+                            data-bs-target="#memoryModal" (click)="selectMemory(memory)" style="padding: 5px;">
                             <div>
                                 <h6 style="font-weight: 400;">{{ memory.name }}</h6>
                                 <p class="text-muted mb-0" style="font-size: 0.8rem;">Created by {{ memory.uploadedBy.firstName }} {{ memory.uploadedBy.lastName }} · {{ memory.createdAt | date }}</p>
                             </div>
                             <span class="badge bg-secondary">{{ memory.type }}</span>
                         </div>
+                        <nav *ngIf="memories.length > pageSize" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                              <!-- Previous button -->
+                              <li class="page-item" [class.disabled]="currentPage === 1">
+                                <button class="page-link" 
+                                        (click)="onPageChange(currentPage - 1)"
+                                        [disabled]="currentPage === 1">
+                                  Previous
+                                </button>
+                              </li>
+                              
+                              <!-- Page numbers -->
+                              <li class="page-item" 
+                                  *ngFor="let page of [].constructor(totalPages); let i = index"
+                                  [class.active]="currentPage === i + 1">
+                                <button class="page-link" (click)="onPageChange(i + 1)">
+                                  {{ i + 1 }}
+                                </button>
+                              </li>
+                              
+                              <!-- Next button -->
+                              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                                <button class="page-link" 
+                                        (click)="onPageChange(currentPage + 1)"
+                                        [disabled]="currentPage === totalPages">
+                                  Next
+                                </button>
+                              </li>
+                            </ul>
+                          </nav>
                         <span class="d-flex justify-content-center align-items-center p-4" 
                               style="color: #a1a1a1" 
                               *ngIf="memories.length === 0">
