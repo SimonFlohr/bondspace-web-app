@@ -61,7 +61,7 @@ export class SearchMemoriesComponent implements OnInit {
     const modalElement = document.getElementById('memoryModal');
     const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
     closeButton?.click();
-    
+
     // Navigate to edit route
     this.router.navigate(['/space', this.spaceId, 'edit-memory', memory.id]);
   }
@@ -74,7 +74,7 @@ export class SearchMemoriesComponent implements OnInit {
           const modalElement = document.getElementById('memoryModal');
           const closeButton = modalElement?.querySelector('[data-bs-dismiss="modal"]') as HTMLElement;
           closeButton?.click();
-          
+
           // Reload memories to update the list
           this.loadMemories();
         },
@@ -112,7 +112,7 @@ export class SearchMemoriesComponent implements OnInit {
         `${memory.uploadedBy.firstName} ${memory.uploadedBy.lastName}`.toLowerCase().includes(term)
       );
     }
-    
+
     if (this.sortField) {
       this.applySorting();
     }
@@ -132,7 +132,7 @@ export class SearchMemoriesComponent implements OnInit {
     this.filteredMemories.sort((a, b) => {
       let valueA, valueB;
 
-      switch(this.sortField) {
+      switch (this.sortField) {
         case 'uploadedBy':
           valueA = `${a.uploadedBy.firstName} ${a.uploadedBy.lastName}`.toLowerCase();
           valueB = `${b.uploadedBy.firstName} ${b.uploadedBy.lastName}`.toLowerCase();
@@ -159,4 +159,83 @@ export class SearchMemoriesComponent implements OnInit {
   goBack() {
     this.router.navigate(['/space', this.spaceId]);
   }
+
+  exportToCSV() {
+    // Only export the filtered/searched results
+    const memories = this.filteredMemories;
+
+    // Define the headers
+    const headers = [
+      'Name',
+      'Type',
+      'Tags',
+      'Created By',
+      'Created At',
+      'Updated At'
+    ];
+
+    // Transform the data into CSV format
+    const rows = memories.map(memory => {
+      // Format dates properly
+      const createdAt = memory.createdAt ?
+        new Date(memory.createdAt).toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true
+        }) : '';
+
+      const updatedAt = memory.updatedAt ?
+        new Date(memory.updatedAt).toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true
+        }) : '';
+
+      return [
+        memory.name,
+        memory.type,
+        (memory.tags || []).join('; '), // Join multiple tags with semicolon
+        `${memory.uploadedBy.firstName} ${memory.uploadedBy.lastName}`,
+        createdAt,
+        updatedAt
+      ];
+    });
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row =>
+        // Properly escape fields that might contain commas
+        row.map(field => `"${field}"`).join(',')
+      )
+    ].join('\n');
+
+    // Create a Blob with the CSV data
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    // Create a download link and trigger download
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    // Set the file name
+    const fileName = `memories_export_${new Date().toISOString().slice(0, 10)}.csv`;
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+
 }
