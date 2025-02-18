@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class SessionValidationFilter implements Filter {
 
     @Override
@@ -19,7 +20,8 @@ public class SessionValidationFilter implements Filter {
         if (path.equals("/api/auth/login") ||
                 path.equals("/api/auth/register") ||
                 path.equals("/api/auth/logout") ||
-                path.startsWith("/public/")) {
+                path.startsWith("/public/") ||
+                path.equals("/api/health")) {
             chain.doFilter(request, response);
             return;
         }

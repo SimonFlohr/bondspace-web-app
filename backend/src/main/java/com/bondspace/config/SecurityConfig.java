@@ -31,7 +31,7 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+                    config.setAllowedOrigins(Arrays.asList("http://localhost", "https://bondspace.app", "https://www.bondspace.app"));
                     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(Arrays.asList("*"));
                     config.setAllowCredentials(true);
@@ -39,8 +39,8 @@ public class SecurityConfig {
                 }))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(basic -> basic.disable())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
